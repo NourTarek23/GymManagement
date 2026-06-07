@@ -13,6 +13,7 @@ public class PlanConfiguration : IEntityTypeConfiguration<Plan>
             .HasMaxLength(50);
 
         builder.Property(p => p.Description)
+            .HasColumnType("varchar")
             .HasMaxLength (200);
 
         builder.Property(p => p.Price)
