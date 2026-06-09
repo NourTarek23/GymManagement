@@ -1,6 +1,7 @@
 using GymManagement.DAL.Repositories.Classes;
 using GymManagement.DAL.Repositories.Interfaces;
 using GymManagement.DbContexts;
+using GymManagement.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace GymManagement;
@@ -14,7 +15,7 @@ public class Program
         // Add services to the container.
         builder.Services.AddControllersWithViews();
 
-        builder.Services.AddScoped<IPlanRepository, PlanRepository>(); 
+        builder.Services.AddScoped(typeof(IGenericRepository<Plan>), typeof(GenericRepository<>)); 
 
         builder.Services.AddDbContext<GymDbContext>(options =>
         {

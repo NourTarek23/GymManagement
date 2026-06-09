@@ -9,4 +9,6 @@ public class Plan : BaseEntity
     public decimal Price { get; set; }
     public int DurationDays { get; set; }
     public bool IsActive { get; set; }
+
+    public ICollection<Membership> Memberships { get; set; }
 }
