@@ -15,7 +15,7 @@ public class Program
         // Add services to the container.
         builder.Services.AddControllersWithViews();
 
-        builder.Services.AddScoped(typeof(IGenericRepository<Plan>), typeof(GenericRepository<>)); 
+        builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
         builder.Services.AddDbContext<GymDbContext>(options =>
         {
@@ -29,7 +29,7 @@ public class Program
 
 
 
-        var app = builder.Build();
+        var app = builder.Build(); 
 
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
