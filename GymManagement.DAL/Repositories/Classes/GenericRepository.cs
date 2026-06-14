@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -47,5 +48,14 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         _dbSet.Remove(entity);
         return await _context.SaveChangesAsync(ct);
     }
-    
+
+    public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default)
+    {
+       return await _dbSet.AnyAsync(predicate, ct);
+    }
+
+    public async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default)
+    {
+        return await _dbSet.FirstOrDefaultAsync(predicate, ct);
+    }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GymManagement.DAL.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ public class HealthRecord : BaseEntity
 {
     public decimal Height { get; set; }
     public decimal Weight { get; set; }
-    public string BloodType { get; set; }
+    public BloodTypes BloodType { get; set; }
     public string? Note { get; set; }
 
     public Member Member { get; set; }
