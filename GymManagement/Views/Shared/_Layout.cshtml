@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+}
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -31,32 +36,35 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav m-auto mb-2 mb-lg-0 mt-3 mt-lg-0">
                         <li class="nav-item">
+
                             <li class="nav-item">
-                                <a class="nav-link active px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page"
-                                   href="#">Home</a>
+                                <a class="nav-link @(currentController == "Home" ? "active" : "") px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page"
+                                   asp-controller="Home" asp-action="Index">Home</a>
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link  px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page" href="#">Members</a>
+                                <a class="nav-link @(currentController == "Members" ? "active" : "") px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page"
+                                   asp-controller="Members" asp-action="Index">Members</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link  px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page" href="#">Trainers</a>
+                                <a class="nav-link @(currentController == "Trainers" ? "active" : "") px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page"
+                                   asp-controller="Trainers" asp-action="Index">Trainers</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link  px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page" href="#">Sessions</a>
+                                <a class="nav-link @(currentController == "Sessions" ? "active" : "") px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page" 
+                                   asp-controller="Sessions" asp-action="Index">Sessions</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page" href="#">Plans</a>
+                                <a class="nav-link @(currentController == "Plans" ? "active" : "") px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page"
+                                   asp-controller="Plans" asp-action="Index">Plans</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page"
-                                   href="#">Memberships</a>
+                                <a class="nav-link @(currentController == "Memberships" ? "active" : "") px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page"
+                                   asp-controller="Memberships" asp-action="Index">Memberships</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page" href="#">
-                                    Sessions
-                                    Schedule
-                                </a>
+                                <a class="nav-link @(currentController == "SessionsSchedule" ? "active" : "") px-3 py-2 mx-2 fw-bolder fs-5" aria-current="page"
+                                   asp-controller="SessionsSchedule" asp-action="Index">Sessions Schedule</a>
                             </li>
                             <li class="nav-item">
                                 <form href="\Account\Logout" method="post" class="d-inline">
@@ -92,7 +100,21 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-        @await RenderSectionAsync("ClientValidation", required: false);
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        const alertBox = document.getElementById("Alert");
+        if (alertBox) {
+        setTimeout(() => {
+        alertBox.style.transition = "opacity 1s ease";
+        alertBox.style.opacity = "0";
+        setTimeout(() => alertBox.remove(), 500);
+        }, 1500);
+        }
+        });
+    </script>
+
+    @await RenderSectionAsync("ClientValidation", required: false);
 
 
 </body>
