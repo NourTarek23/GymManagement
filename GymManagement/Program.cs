@@ -21,14 +21,15 @@ public class Program
 
         builder.Services.AddScoped<IMemberService, MemberService>();
 
+        builder.Services.AddScoped<ITrainerService, TrainerService>();
+
         builder.Services.AddScoped<IPlanService, PlanService>();
+
 
         builder.Services.AddDbContext<GymDbContext>(options =>
         {
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
         });
-
-
 
 
 
