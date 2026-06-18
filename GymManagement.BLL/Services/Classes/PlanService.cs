@@ -1,4 +1,5 @@
 ﻿using GymManagement.BLL.Services.Interfaces;
+using GymManagement.BLL.ViewModels.Plans;
 using GymManagement.DAL.Models;
 using GymManagement.DAL.Repositories.Interfaces;
 using GymManagement.Models;
@@ -37,14 +38,38 @@ public class PlanService : IPlanService
         return plan;
     }
 
-    public async Task<bool> UpdatePlanAsync(int planId, Plan plan, CancellationToken ct)
+    public async Task<PlanToUpdateViewModel?> GetPlanToUpdateAsync(int planId, CancellationToken ct)
     {
-        var model = await _planRepository.GetByIdAsync(planId, ct);
+        var plan = await _planRepository.GetByIdAsync(planId, ct);
+        if (plan is null) return null;
 
-        if (model is null) return false;
+        var model = new PlanToUpdateViewModel()
+        {
+            Name = plan.Name,
+            Price = plan.Price,
+            Description = plan.Description,
+            Duration = plan.DurationDays
+        };
+
+        return model;
+    }
+
+    public async Task<bool> UpdatePlanAsync(int planId, PlanToUpdateViewModel model, CancellationToken ct)
+    {
+        var plan = await _planRepository.GetByIdAsync(planId, ct);
+
+        if (plan is null) return false;
 
         // can't Edit Plan Name
         if (model.Name != plan.Name) return false;
+
+        //can't update plan with active membership
+        var activeMembership = await _membershipRepository.AnyAsync(M => M.PlanId == planId && M.EndDate > DateTime.UtcNow, ct);
+        if (activeMembership) return false;
+
+        plan.Price = model.Price;
+        plan.Description = model.Description;
+        plan.DurationDays = model.Duration;
 
         var count = await _planRepository.UpdateAsync(plan, ct);
 
@@ -57,6 +82,7 @@ public class PlanService : IPlanService
 
         if (plan is null) return false;
 
+        //can't Deactivate plan with active memberships
         if (plan.IsActive && await _membershipRepository.AnyAsync(M => M.PlanId == id && M.EndDate > DateTime.UtcNow, ct))
         {
             return false;

@@ -1,4 +1,4 @@
-﻿@model Plan
+﻿@model PlanToUpdateViewModel
 @{
     ViewData["Title"] = "Edit Plan";
 }
@@ -23,12 +23,12 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label asp-for="DurationDays" class="form-label fw-semibold">
+                                <label asp-for="Duration" class="form-label fw-semibold">
                                     Duration (Days) <span class="text-danger">*</span>
                                 </label>
-                                <input asp-for="DurationDays" type="number" class="form-control" />
+                                <input asp-for="Duration" type="number" class="form-control" />
                                 <small class="text-muted">e.g., 30 days = 1 month</small>
-                                <span asp-validation-for="DurationDays" class="text-danger d-block"></span>
+                                <span asp-validation-for="Duration" class="text-danger d-block"></span>
                             </div>
 
                             <div class="col-md-6">
@@ -61,3 +61,8 @@
         </div>
     </div>
 </div>
+
+@section ClientValidation {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+}

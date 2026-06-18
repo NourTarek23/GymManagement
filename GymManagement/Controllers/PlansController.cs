@@ -1,4 +1,5 @@
 ﻿using GymManagement.BLL.Services.Interfaces;
+using GymManagement.BLL.ViewModels.Plans;
 using GymManagement.DAL.Repositories.Classes;
 using GymManagement.DAL.Repositories.Interfaces;
 using GymManagement.DbContexts;
@@ -47,7 +48,7 @@ public class PlansController : Controller
     [HttpGet]
     public async Task<IActionResult> Edit(int id, CancellationToken ct)
     {
-        var result = await _planService.GetPlanDetailsAsync(id, ct);
+        var result = await _planService.GetPlanToUpdateAsync(id, ct);
 
         if (result is null)
         {
@@ -60,25 +61,25 @@ public class PlansController : Controller
 
 
     [HttpPost]
-    public async Task<IActionResult> Edit(int id,Plan plan, CancellationToken ct)
+    public async Task<IActionResult> Edit(int id, PlanToUpdateViewModel model, CancellationToken ct)
     {
         if (ModelState.IsValid)
         {
-            var result = await _planService.UpdatePlanAsync(id, plan, ct);
+            var result = await _planService.UpdatePlanAsync(id, model, ct);
 
             if (result)
             {
-                TempData["SuccessMessage"] = $"{plan.Name} Updated Successfully !";
+                TempData["SuccessMessage"] = $"{model.Name} Updated Successfully !";
             }
             else
             {
-                TempData["ErrorMessage"] = $"Failed To Update {plan.Name} !";
+                TempData["ErrorMessage"] = $"Failed To Update {model.Name} !";
             }
 
             return RedirectToAction(nameof(Index));
         }
 
-        return View(plan);
+        return View(model);
     }
 
     [HttpPost]

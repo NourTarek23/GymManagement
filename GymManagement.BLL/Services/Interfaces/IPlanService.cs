@@ -1,4 +1,5 @@
-﻿using GymManagement.Models;
+﻿using GymManagement.BLL.ViewModels.Plans;
+using GymManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,9 @@ public interface IPlanService
 
     Task<Plan?> GetPlanDetailsAsync(int planId, CancellationToken ct);
 
-    Task<bool> UpdatePlanAsync(int planId, Plan plan, CancellationToken ct);
+    Task<PlanToUpdateViewModel?> GetPlanToUpdateAsync(int planId, CancellationToken ct);
+
+    Task<bool> UpdatePlanAsync(int planId, PlanToUpdateViewModel plan, CancellationToken ct);
 
     Task<bool> UpdatePlanStatusAsync(int id, CancellationToken ct);
 }
