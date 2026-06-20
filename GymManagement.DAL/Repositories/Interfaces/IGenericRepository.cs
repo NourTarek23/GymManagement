@@ -15,11 +15,11 @@ public interface IGenericRepository<TEntity> where TEntity : BaseEntity, new()
 
     Task<TEntity?> GetByIdAsync(int id, CancellationToken ct = default);
 
-    Task<int> AddAsync(TEntity entity, CancellationToken ct = default);
+    void Add(TEntity entity);
 
-    Task<int> UpdateAsync(TEntity entity, CancellationToken ct = default);
+    void Update(TEntity entity);
 
-    Task<int> DeleteAsync(TEntity entity, CancellationToken ct = default);
+    void Delete(TEntity entity);
 
     Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default);
 
