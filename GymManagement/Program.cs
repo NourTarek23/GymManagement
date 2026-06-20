@@ -1,3 +1,5 @@
+using AutoMapper;
+using GymManagement.BLL;
 using GymManagement.BLL.Services.Classes;
 using GymManagement.BLL.Services.Interfaces;
 using GymManagement.DAL;
@@ -31,6 +33,9 @@ public class Program
         builder.Services.AddScoped<ISessionService, SessionService>();
 
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        //How to apply DI for Auto Mapper
+        builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfile()));
 
 
 

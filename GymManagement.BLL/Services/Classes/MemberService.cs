@@ -1,4 +1,5 @@
-﻿using GymManagement.BLL.Services.Interfaces;
+﻿using AutoMapper;
+using GymManagement.BLL.Services.Interfaces;
 using GymManagement.DAL;
 using GymManagement.DAL.Models;
 using GymManagementSystem.BLL.ViewModels.MemberViewModels;
@@ -8,10 +9,13 @@ namespace GymManagement.BLL.Services.Classes;
 public class MemberService : IMemberService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
 
-    public MemberService(IUnitOfWork unitOfWork)
+    public MemberService(IUnitOfWork unitOfWork,
+                         IMapper mapper)
     {
         _unitOfWork = unitOfWork;
+        _mapper = mapper;
     }
 
     public async Task<IEnumerable<MemberViewModel>> GetAllMembersAsync(CancellationToken ct)
@@ -19,15 +23,18 @@ public class MemberService : IMemberService
         // Mapping from Member to MemberViewModel
         var members = await _unitOfWork.GetRepository<Member>().GetAllAsync(ct: ct);
 
-        var membersViewModel = members.Select(M => new MemberViewModel
-        {
-            Id = M.Id,
-            Name = M.Name,
-            Photo = M.Photo,
-            Email = M.Email,
-            Phone = M.Phone,
-            Gender = M.Gender.ToString()
-        });
+        //var membersViewModel = members.Select(M => new MemberViewModel
+        //{
+        //    Id = M.Id,
+        //    Name = M.Name,
+        //    Photo = M.Photo,
+        //    Email = M.Email,
+        //    Phone = M.Phone,
+        //    Gender = M.Gender.ToString()
+        //});
+
+
+        var membersViewModel = _mapper.Map<IEnumerable<MemberViewModel>>(members);
 
         return membersViewModel;
     }
@@ -39,16 +46,19 @@ public class MemberService : IMemberService
         if (member is null) return null;
 
         //Mapping Member to MemberViewModel
-        var model = new MemberViewModel()
-        {
-            Photo = member.Photo,
-            Name = member.Name,
-            Email = member.Email,
-            Phone = member.Phone,
-            Gender = member.Gender.ToString(),
-            DateOfBirth = member.DateOfBirth.ToString(),
-            Address = $"{member.Address.BuildingNumber} - {member.Address.Street} - {member.Address.City}"
-        };
+        //var model = new MemberViewModel()
+        //{
+        //    Photo = member.Photo,
+        //    Name = member.Name,
+        //    Email = member.Email,
+        //    Phone = member.Phone,
+        //    Gender = member.Gender.ToString(),
+        //    DateOfBirth = member.DateOfBirth.ToString(),
+        //    Address = $"{member.Address.BuildingNumber} - {member.Address.Street} - {member.Address.City}"
+        //};
+
+        //Mapping
+        var model = _mapper.Map<MemberViewModel>(member);
 
         var activeMembership = await _unitOfWork.GetRepository<Membership>().FirstOrDefaultAsync(M => M.MemberId == memberId && M.EndDate > DateTime.UtcNow, ct);
 
@@ -69,18 +79,21 @@ public class MemberService : IMemberService
 
 
         //mapping healthRecord to HealthRecordViewModel
-        var model = new HealthRecordViewModel()
-        {
-            Height = healthRecord.Height,
-            Weight = healthRecord.Weight,
-            BloodType = healthRecord.BloodType,
-            Note = healthRecord.Note
-        };
+        //var model = new HealthRecordViewModel()
+        //{
+        //    Height = healthRecord.Height,
+        //    Weight = healthRecord.Weight,
+        //    BloodType = healthRecord.BloodType,
+        //    Note = healthRecord.Note
+        //};
+
+        var model = _mapper.Map<HealthRecordViewModel>(healthRecord);
 
 
         return model;
     }
-
+    
+    //You Need To Check This Mapping *********************************************************************
     public async Task<bool> CreateMemberAsync(CreateMemberViewModel model, CancellationToken ct)
     {
         //Check Email
@@ -91,27 +104,31 @@ public class MemberService : IMemberService
         if (emailExists || phoneExists) return false;
 
         //Casting from CreateMemberViewModel to Member
-        var member = new Member()
-        {
-            Name = model.Name,
-            Email = model.Email,
-            Phone = model.Phone,
-            Gender = model.Gender,
-            DateOfBirth = model.DateOfBirth,
-            Address = new Address()
-            {
-                BuildingNumber = model.BuildingNumber,
-                City = model.City,
-                Street = model.Street
-            },
-            HealthRecord = new HealthRecord()
-            {
-                Height = model.HealthRecordViewModel.Height,
-                Weight = model.HealthRecordViewModel.Weight,
-                BloodType = model.HealthRecordViewModel.BloodType,
-                Note = model.HealthRecordViewModel.Note
-            }
-        };
+        //var member = new Member()
+        //{
+        //    Name = model.Name,
+        //    Email = model.Email,
+        //    Phone = model.Phone,
+        //    Gender = model.Gender,
+        //    DateOfBirth = model.DateOfBirth,
+        //    Address = new Address()
+        //    {
+        //        BuildingNumber = model.BuildingNumber,
+        //        City = model.City,
+        //        Street = model.Street
+        //    },
+        //    HealthRecord = new HealthRecord()
+        //    {
+        //        Height = model.HealthRecordViewModel.Height,
+        //        Weight = model.HealthRecordViewModel.Weight,
+        //        BloodType = model.HealthRecordViewModel.BloodType,
+        //        Note = model.HealthRecordViewModel.Note
+        //    }
+        //};
+
+        //Auto Mapping
+        var member = _mapper.Map<Member>(model);
+
 
         _unitOfWork.GetRepository<Member>().Add(member);
 
@@ -125,16 +142,18 @@ public class MemberService : IMemberService
         var member = await _unitOfWork.GetRepository<Member>().GetByIdAsync(memberId, ct);
         if (member is null) return null;
 
-        var model = new MemberToUpdateViewModel()
-        {
-            Name = member.Name,
-            Photo = member.Photo,
-            Phone = member.Phone,
-            Email = member.Email,
-            BuildingNumber = member.Address.BuildingNumber,
-            Street = member.Address.Street,
-            City = member.Address.City
-        };
+        //var model = new MemberToUpdateViewModel()
+        //{
+        //    Name = member.Name,
+        //    Photo = member.Photo,
+        //    Phone = member.Phone,
+        //    Email = member.Email,
+        //    BuildingNumber = member.Address.BuildingNumber,
+        //    Street = member.Address.Street,
+        //    City = member.Address.City
+        //};
+
+        var model = _mapper.Map<MemberToUpdateViewModel>(member);
 
         return model;
     }
