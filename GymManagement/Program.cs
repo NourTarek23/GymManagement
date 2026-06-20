@@ -1,5 +1,6 @@
 using GymManagement.BLL.Services.Classes;
 using GymManagement.BLL.Services.Interfaces;
+using GymManagement.DAL;
 using GymManagement.DAL.Repositories.Classes;
 using GymManagement.DAL.Repositories.Interfaces;
 using GymManagement.DbContexts;
@@ -19,11 +20,18 @@ public class Program
 
         builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
+        builder.Services.AddScoped<ISessionRepository, SessionRepository>();
+
         builder.Services.AddScoped<IMemberService, MemberService>();
 
         builder.Services.AddScoped<ITrainerService, TrainerService>();
 
         builder.Services.AddScoped<IPlanService, PlanService>();
+
+        builder.Services.AddScoped<ISessionService, SessionService>();
+
+        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
 
         builder.Services.AddDbContext<GymDbContext>(options =>
