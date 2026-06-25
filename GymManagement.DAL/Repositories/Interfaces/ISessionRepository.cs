@@ -8,4 +8,6 @@ public interface ISessionRepository : IGenericRepository<Session>
     Task<IEnumerable<Session>> GetAllSessionsWithTrainerAndCategoryAsync(CancellationToken ct = default);
 
     Task<int> GetCountOfBookedSlotsAsync(int SessionId, CancellationToken ct = default);
+
+    Task<Session?> GetSessionByIdWithTrainerAndCategoryAsync(int SessionId, CancellationToken ct = default); 
 }
