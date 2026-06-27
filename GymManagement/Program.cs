@@ -33,6 +33,8 @@ public class Program
 
         builder.Services.AddScoped<ISessionService, SessionService>();
 
+        builder.Services.AddScoped<IAnalyticService, AnalyticService>();
+
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         //How to apply DI for Auto Mapper

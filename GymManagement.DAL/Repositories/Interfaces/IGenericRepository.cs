@@ -25,4 +25,6 @@ public interface IGenericRepository<TEntity> where TEntity : BaseEntity, new()
 
     Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default);
 
+    Task<int> CountAsync(Expression<Func<TEntity, bool>>? predicate = null, CancellationToken ct = default);
+
 }

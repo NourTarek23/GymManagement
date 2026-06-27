@@ -47,4 +47,10 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
     {
         return await _dbSet.FirstOrDefaultAsync(predicate, ct);
     }
+
+    public async Task<int> CountAsync(Expression<Func<TEntity, bool>>? predicate = null, CancellationToken ct = default)
+    {
+        return predicate is null ? await _dbSet.AsNoTracking().CountAsync(ct) : await _dbSet.AsNoTracking().CountAsync(predicate, ct);
+    }
+
 }
