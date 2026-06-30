@@ -9,7 +9,7 @@
         <header class="mb-4">
             <h3 class="text-primary-color">Add Member</h3>
         </header>
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
 
             <!-- Step navigation -->
             <ul class="nav nav-tabs mb-4" id="addMemberTabs" role="tablist">
@@ -36,6 +36,15 @@
                         <hr class="mt-2">
                     </div>
                     <div class="row g-3">
+
+                        <div class="col-12 col-md-6">
+                            <div>
+                                <img id="photoPreview" src="#" alt="Photo Preview" class="img-thumbnail" style="max-width: 200px; display: none" />
+                            </div>
+                            <label asp-for="PhotoFile" class="form-label"></label>
+                            <input asp-for="PhotoFile" class="form-control" id="photoInput" />
+                            <span asp-validation-for="PhotoFile" class="text-danger"></span>
+                        </div>
                         <div class="col-12 col-md-6">
                             <label asp-for="Name" class="form-label"></label>
                             <input asp-for="Name" class="form-control" />

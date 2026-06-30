@@ -1,10 +1,14 @@
 ﻿using GymManagement.DAL.Models.Enums;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace GymManagementSystem.BLL.ViewModels.MemberViewModels
 {
     public class CreateMemberViewModel
     {
+        [Required(ErrorMessage = "Profile Picture is Required")]
+        [Display(Name = "Profile Picture")]
+        public IFormFile PhotoFile { get; set; }
 
         [Required(ErrorMessage = "Name Is Required")]
         [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Name can only contain letters and spaces")]

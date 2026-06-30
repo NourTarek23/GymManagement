@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using GymManagement.BLL.Services.Attachment;
 using GymManagement.BLL.Services.Interfaces;
 using GymManagement.DAL;
 using GymManagement.DAL.Models;
@@ -10,12 +11,15 @@ public class MemberService : IMemberService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IAttachmentService _attachmentService;
 
     public MemberService(IUnitOfWork unitOfWork,
-                         IMapper mapper)
+                         IMapper mapper,
+                         IAttachmentService attachmentService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _attachmentService = attachmentService;
     }
 
     public async Task<IEnumerable<MemberViewModel>> GetAllMembersAsync(CancellationToken ct)
@@ -103,38 +107,29 @@ public class MemberService : IMemberService
 
         if (emailExists || phoneExists) return false;
 
-        //Casting from CreateMemberViewModel to Member
-        //var member = new Member()
-        //{
-        //    Name = model.Name,
-        //    Email = model.Email,
-        //    Phone = model.Phone,
-        //    Gender = model.Gender,
-        //    DateOfBirth = model.DateOfBirth,
-        //    Address = new Address()
-        //    {
-        //        BuildingNumber = model.BuildingNumber,
-        //        City = model.City,
-        //        Street = model.Street
-        //    },
-        //    HealthRecord = new HealthRecord()
-        //    {
-        //        Height = model.HealthRecordViewModel.Height,
-        //        Weight = model.HealthRecordViewModel.Weight,
-        //        BloodType = model.HealthRecordViewModel.BloodType,
-        //        Note = model.HealthRecordViewModel.Note
-        //    }
-        //};
+        //ToDo : Upload File 
+        var fileName = await _attachmentService.UploadAsync(model.PhotoFile.OpenReadStream(), "MembersPicture", model.PhotoFile.FileName, ct);
+        if (string.IsNullOrWhiteSpace(fileName)) return false;
 
         //Auto Mapping
         var member = _mapper.Map<Member>(model);
-
+        member.Photo = fileName;
 
         _unitOfWork.GetRepository<Member>().Add(member);
 
         var count = await _unitOfWork.SaveChangesAsync(ct);
 
-        return count > 0;
+        if(count > 0)
+        {
+            return true;
+        }
+        else
+        {
+            //Delete Photo 
+            _attachmentService.Delete("MembersPicture", fileName);
+            return false;
+        }
+        
     }
 
     public async Task<MemberToUpdateViewModel?> GetMemberToUpdateAsync(int memberId, CancellationToken ct)
@@ -189,7 +184,9 @@ public class MemberService : IMemberService
         if (member is null) return false;
 
         var hasFutureSessions = await _unitOfWork.GetRepository<Booking>().AnyAsync(B => B.MemberId == memberId && B.Session.StartDate > DateTime.UtcNow, ct);
-        if(hasFutureSessions) return false;
+        if (hasFutureSessions) return false;
+
+        if (member.Photo is not null) _attachmentService.Delete("MembersPicture", member.Photo);
 
         _unitOfWork.GetRepository<Member>().Delete(member);
 
